@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual env
+.venv/
+venv/
+bin/
+include/
+lib/
+lib64/
+pyvenv.cfg
+
+# Modelos / cache
+*.gguf
+*.bin
+*.safetensors
+
+# Cache de embeddings (gerado pelo ingest)
+rag/chroma_db/
+
+# Snapshots reais da SAP (termos de uso)
+rag/snapshots/raw_html/
+rag/snapshots/processed_md/
+
+# Logs
+*.log
+demo_runs*.log
+
+# Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Gradio
+gradio_cached_examples/
+flagged/
+
+# Secrets
+.env
