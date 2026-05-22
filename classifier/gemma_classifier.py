@@ -26,7 +26,7 @@ from config import (
 class Finding(BaseModel):
     objeto_sap: str
     classificacao: str  # PUBLISHED | INTERNAL | DEPRECATED | UNKNOWN
-    severidade: str    # BAIXA | MEDIA | ALTA | CRITICA
+    severidade: str    # LOW | MEDIUM | HIGH | CRITICAL
     alternativas_recomendadas: list[str] = Field(default_factory=list)
     justificativa: str
     linha_problematica: Optional[str] = None
@@ -67,13 +67,16 @@ Your task is to classify ABAP/Python/Java code excerpts for compliance with the 
 - INTERNAL APIs (direct table access, undocumented classes, private RFCs) are prohibited under v4/2026.
 - DEPRECATED APIs (published but marked obsolete with a recommended replacement) violate the Clean Core principle.
 - UNKNOWN when there is insufficient information in the documents to classify.
+- CUSTOM_REVIEW for customer-namespace (Z*, Y*) code that is not automatically prohibited but should be reviewed by a human auditor (e.g., undocumented Z*
+  that may wrap non-published APIs, or Z* whose business logic has a released
+  SAP equivalent).
 
 You receive: (a) the code excerpt under analysis, (b) relevant excerpts retrieved from official SAP documentation via RAG.
 
 Respond ONLY in valid JSON with this structure:
 {
   "objeto_sap": "<name of the BAPI/table/class identified>",
-  "classificacao": "PUBLISHED" | "INTERNAL" | "DEPRECATED" | "UNKNOWN",
+  "classificacao": "PUBLISHED" | "INTERNAL" | "DEPRECATED" | "UNKNOWN" | "CUSTOM_REVIEW",
   "severidade": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
   "alternativas_recomendadas": ["<name of substitute>", ...],
   "justificativa": "<2-3 sentences IN BRAZILIAN PORTUGUESE (PT-BR) explicitly citing the documentation excerpt that supports the decision>",
@@ -154,7 +157,7 @@ class GemmaClassifier:
             finding = Finding(
                 objeto_sap=parsed.get("objeto_sap", candidate["objeto"]),
                 classificacao=parsed.get("classificacao", "UNKNOWN"),
-                severidade=parsed.get("severidade", "MEDIA"),
+                severidade=parsed.get("severidade", "MEDIUM"),
                 alternativas_recomendadas=_normalize_alternatives(
                     parsed.get("alternativas_recomendadas") or
                     parsed.get("alternativa_recomendada")

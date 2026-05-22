@@ -37,12 +37,22 @@ Legacy vendor master tables. Same deprecation status as customer master tables.
 
 ## Pricing (Legacy)
 
-### Internal Z-namespace Pricing RFCs
-Function modules in the Z* customer namespace that perform pricing calculations
-are typically not documented in the Business Accelerator Hub and constitute
-INTERNAL or UNKNOWN APIs under v4/2026. These should be reviewed and either:
-1. Replaced with released SAP pricing APIs (API_PRICING_PROCEDURE_SRV)
-2. Refactored as BTP-side logic consuming released APIs
+## Customer Z* Code Review Patterns
+
+### When Z* function modules need review
+Customer-namespace (Z*) function modules are NOT automatically prohibited under
+v4/2026 — they are customer-developed code and remain customer IP. However, Z*
+modules should be flagged for CUSTOM_REVIEW when any of the following applies:
+
+1. The Z* function wraps a non-published SAP API (direct internal API call inside)
+2. The Z* function performs direct access to SAP standard tables
+3. The Z* function name suggests business logic that has a released SAP equivalent
+   (e.g., Z_PRICING_CALC where API_PRICING_PROCEDURE_SRV exists)
+4. The Z* function has no documentation regarding its dependencies
+
+For pricing-related Z* RFCs specifically, consider whether the released API
+API_PRICING_PROCEDURE_SRV could replace custom logic. This is a review
+recommendation, not a violation.
 
 ## Migration Priority Matrix
 

@@ -20,9 +20,17 @@ Internal APIs include:
 - Direct read or write access to underlying database tables via SELECT, INSERT,
   UPDATE, DELETE statements in custom ABAP code (e.g., MARA, BSEG, EKKO, VBAK,
   KNA1, LFA1, MARC, MARD)
-- Function modules and RFCs not listed in the Business Accelerator Hub
-- Internal classes, methods, and CDS views marked as @AccessControl.private
-- Customer-namespace (Z*, Y*) function modules with undocumented signatures
+- SAP-internal function modules and RFCs not listed in the Business Accelerator Hub
+- SAP-internal classes, methods, and CDS views marked as @AccessControl.private
+
+Note on Customer Namespace (Z*, Y*):
+Customer-owned ABAP code in the Z* and Y* namespaces is NOT automatically
+prohibited by this policy. These are customer-developed interfaces and remain
+customers' own intellectual property. However, customer Z* code that wraps
+non-published SAP APIs, performs direct standard-table access, or bypasses
+documented API controls inherits the underlying violation. Such code should be
+flagged for human review (CUSTOM_REVIEW), not automatically classified as
+INTERNAL.
 
 ## Section 3: Prohibitions
 
