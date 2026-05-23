@@ -1,6 +1,6 @@
 # SAPMigrate
 
-> Offline ABAP code auditor for SAP API Policy v.4.2026a — powered by Gemma 4 31B Dense, running 100% locally.
+> Local-first ABAP audit assistant for SAP API governance and Clean Core migration — powered by Gemma 4 31B Dense, running 100% offline.
 
 [![Gemma 4 Challenge](https://img.shields.io/badge/Gemma%204-Challenge-blue)](https://dev.to/t/gemmachallenge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -15,7 +15,7 @@ In **April 2026**, SAP published the **SAP API Policy v.4.2026a** (the community
 
 For ABAP teams modernizing toward Clean Core, this creates a practical audit problem:
 
-- Direct access to SAP standard tables such as `MARA`, `BSEG`, `VBAK`, or `KNA1` bypasses the released API layer and should be replaced with published APIs or CDS views.
+- Direct access to SAP standard tables such as `MARA`, `BSEG`, `VBAK`, or `KNA1` is treated by this prototype as a Clean Core and API-governance risk, because it creates direct dependencies on non-released internal data structures and may need remediation toward published APIs, released CDS views, or documented extension points.
 - Deprecated BAPIs (e.g., `BAPI_CUSTOMER_CREATEFROMDATA1`) need migration toward supported Business Partner or OData APIs.
 - Customer-owned `Z*` and `Y*` function modules are **not** automatically prohibited — they remain customer-developed code and IP. However, undocumented custom wrappers may require review when they expose SAP-internal objects, depend on non-published SAP APIs, or bypass documented API controls.
 
@@ -47,7 +47,7 @@ SAPMigrate is a working prototype that demonstrates how this type of audit can r
 ## Screenshots
 
 ### Findings table
-Sortable view of violations across the codebase, color-coded by severity.
+Sortable view of audit findings across the codebase, color-coded by severity.
 
 ![Findings](docs/screenshots/findings.png)
 
@@ -81,7 +81,7 @@ The choice is deliberate and central to the project. Across the Gemma 4 options 
 - **26B MoE**: viable alternative, but routing variance reduces predictability for structured-output tasks. For an auditing tool, deterministic JSON output matters.
 - **31B Dense**: the sweet spot for this use case. Comfortable in ~20 GB of VRAM, predictable output, strong technical reasoning, native multilingual capability that produces PT-BR justifications matching the quality of a senior auditor's report.
 
-The **128K context window** is critical: each classification prompt includes the system instructions, the code excerpt, up to 3 RAG-retrieved excerpts, and few-shot examples — comfortably under the limit, no chunk-juggling needed.
+The **128K context window** is strategically useful rather than merely convenient: it allows the prototype to combine system instructions, ABAP excerpts, retrieved policy context, and few-shot examples without aggressive truncation. In production, the same design can scale to larger code excerpts, module-specific documentation, and richer audit histories.
 
 ## How to run
 
@@ -203,7 +203,7 @@ For a production-grade audit, you would replace this with a real snapshot of:
 
 The pipeline is designed so that swapping the contents of `rag/docs/` and re-running `python rag/ingest.py` is enough to adapt the auditor to your organization's specific SAP landscape.
 
-## Evaluation
+## Demo Evaluation
 
 The demo dataset contains 6 small ABAP files covering four classification outcomes: PUBLISHED, INTERNAL, DEPRECATED, and CUSTOM_REVIEW.
 Running the full pipeline on the demo set with the default `GEMMA_MODEL=gemma4:31b` produces:
@@ -218,6 +218,8 @@ Running the full pipeline on the demo set with the default `GEMMA_MODEL=gemma4:3
 | Determinism across reruns | Same class/severity across runs; justification wording varies slightly |
 | Average latency per finding | ~10–15 s (RTX 5090, Q4_K_M) |
 | Peak VRAM (Gemma 4 31B Dense + embeddings) | ~22 GB |
+
+This is a reproducibility smoke test, not a statistically meaningful benchmark. Its purpose is to prove that the full parser → RAG → Gemma → validation → report pipeline works end to end.
 
 ### Classification breakdown by demo file
 
@@ -249,7 +251,7 @@ pattern-matching. Two examples:
    namespace as customer-owned IP. The model correctly assigns
    `CUSTOM_REVIEW` for Z* code that may wrap non-published SAP APIs,
    while keeping direct standard-table access (MARA, MARC, VBAK) firmly
-   classified as `INTERNAL` violations.
+   classified as `INTERNAL` findings requiring remediation.
 
 Smaller models in the Gemma 4 family (E2B/E4B) do not exhibit this
 multi-step reasoning over policy text in our local testing.
@@ -274,7 +276,7 @@ Working notes from building this prototype:
 
 1. **JSON output is solid out of the box.** With `format="json"` and `temperature=0.1`, all 8 demo classifications produced valid JSON parseable by Pydantic with zero retries.
 2. **Deterministic enough for product use.** Re-running the same input twice produced identical classifications and severity scores. Justification wording varies slightly, which is acceptable.
-3. **PT-BR technical fluency is real.** The model produces sentences like *"O acesso direto à tabela MARA via SELECT é explicitamente proibido pela política v4/2026"* — terminology, structure, and tone match a senior auditor's report.
+3. **PT-BR technical fluency is real.** The model produces auditor-style sentences such as *"O acesso direto à tabela MARA via SELECT cria uma dependência direta de estrutura interna não publicada e deve ser revisado no contexto de Clean Core, APIs publicadas e documentação específica do produto."* — terminology, structure, and tone match a senior auditor's report.
 4. **Reasoning in layers.** In one test case (`Z_CUSTOM_BUSINESS_RULE`), the model recognized that customer Z* code is not automatically prohibited by the policy, flagged it as `CUSTOM_REVIEW` (not `INTERNAL`), and elevated severity to `HIGH` because the function name suggested critical business logic without supporting documentation. The model justified each decision explicitly, citing the retrieved policy excerpts. Smaller Gemma 4 variants (E2B/E4B) do not exhibit this multi-step reasoning over retrieved policy text in our local testing.
 5. **128K context is comfortable.** No need for chunk-juggling when combining system prompt + code + 3 RAG snippets + few-shots.
 
@@ -298,6 +300,13 @@ If extended beyond a proof of concept:
 - Submission for the [Gemma 4 Challenge](https://dev.to/t/gemmachallenge) by [DEV Community](https://dev.to) and Google.
 - SAP documentation references are public; this project does not redistribute SAP-proprietary content.
 - SAP, ABAP, S/4HANA, and related product names are trademarks of SAP SE or its affiliates. This project is an independent educational prototype and is not affiliated with or endorsed by SAP.
+- SAPMigrate is an engineering audit assistant, not a legal compliance determination tool. Findings should be reviewed by qualified SAP architects, security teams, and legal/compliance stakeholders before being treated as policy violations.
+
+## On AI assistance
+
+During development I used AI coding assistants (large language models) for ideation, code review, debugging, and writing polish. The project architecture, implementation, SAP domain assumptions, evaluation setup, and final submission were authored, reviewed, and validated by Paulo Almeida.
+
+Gemma 4 31B Dense is not merely a development aid in this project: it is the local runtime model used by SAPMigrate to classify ABAP call sites, reason over retrieved documentation, and generate audit justifications. No uploaded ABAP code leaves the user's machine during application execution.
 
 ---
 
