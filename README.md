@@ -145,7 +145,30 @@ If Ollama is running on Windows and you call from WSL2, you may need to point th
 
 ```bash
 export OLLAMA_HOST="http://$(ip route show | grep -i default | awk '{print $3}'):11434"
+
 ```
+
+### Note for Windows users (Git Bash / Anaconda Prompt)
+
+If you run SAPMigrate on Windows with Anaconda Python or in a `cp1252`-default terminal, you may see:
+
+```
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4cb'
+```
+
+This is a Windows-specific encoding issue: the legacy `cp1252` codec doesn't support the emoji characters used in console output. Fix by exporting UTF-8 mode before running:
+
+```bash
+# Git Bash
+export PYTHONIOENCODING=utf-8
+export PYTHONUTF8=1
+
+# Or in CMD / PowerShell
+set PYTHONIOENCODING=utf-8
+set PYTHONUTF8=1
+```
+
+WSL2 and native Linux/macOS terminals are not affected.
 
 ## Architecture
 
