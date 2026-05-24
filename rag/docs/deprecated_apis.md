@@ -58,7 +58,7 @@ recommendation, not a violation.
 
 | Pattern | Severity | Action |
 |---------|----------|--------|
-| Direct SELECT on standard tables | CRITICA | Immediate remediation |
-| Deprecated BAPI calls | ALTA | Plan migration within 6 months |
-| Z* function modules without docs | MEDIA | Audit and document, then migrate |
-| Released BAPI usage | BAIXA | None — compliant |
+| Direct SELECT on standard tables | CRITICAL | Immediate remediation |
+| Deprecated BAPI calls | HIGH | Plan migration within 6 months |
+| Z* function modules without docs | MEDIUM | Audit and document, then migrate |
+| Released BAPI usage | LOW | None — compliant |

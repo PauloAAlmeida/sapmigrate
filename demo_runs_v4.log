@@ -1,0 +1,225 @@
+==================== demo/01_purchase_order_create.abap ====================
+
+📋 1 candidatos a auditar em 01_purchase_order_create.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  66%|██████▋   | 132/199 [00:00<00:00, 1307.93it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1796.95it/s]
+
+[1/1] Auditando BAPI_PO_CREATE1 (linha 19)...
+
+  🔍 RAG query: BAPI_PO_CREATE1 bapi_call
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → deprecated_apis.md: ## Vendor Master (Deprecated under Business Partner approach)
+
+### BAPI_VENDOR_C...
+
+  ✅ PUBLISHED | LOW
+     Alternativas: n/a
+     Justificativa: A função BAPI_PO_CREATE1 está explicitamente listada no SAP Business Accelerator Hub como 'Released for customer use' e em conformidade com a Política de API v4/2026, conforme descrito no Documento 1.
+
+============================================================
+📊 RESUMO: 0 violações de 1 análises
+============================================================
+==================== demo/02_direct_table_access.abap ====================
+
+📋 2 candidatos a auditar em 02_direct_table_access.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  72%|███████▏  | 144/199 [00:00<00:00, 1427.90it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1750.07it/s]
+
+[1/2] Auditando MARA (linha 7)...
+
+  🔍 RAG query: MARA select_table
+     → business_accelerator_hub.md: ### API_PRODUCT_SRV (OData)
+- Status: Released
+- Endpoint: /sap/opu/odata/sap/AP...
+     → business_accelerator_hub.md: ### API_MATERIAL_STOCK_SRV
+- Status: Released
+- Description: Stock-related mater...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+
+  ✅ INTERNAL | CRITICAL
+     Alternativas: ['API_PRODUCT_SRV', 'I_Material']
+     Justificativa: O acesso direto à tabela MARA é explicitamente proibido pela política v4/2026. De acordo com o Documento 1 e 2, o acesso deve ser substituído pelo OData API_PRODUCT_SRV ou a CDS view I_Material.
+
+[2/2] Auditando MARC (linha 13)...
+
+  🔍 RAG query: MARC select_table
+     → business_accelerator_hub.md: ### API_PRODUCT_SRV (OData)
+- Status: Released
+- Endpoint: /sap/opu/odata/sap/AP...
+     → clean_core_principles.md: ## Prohibited Patterns
+
+### Direct Table Access
+SELECT, INSERT, UPDATE, DELETE s...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+
+  ✅ INTERNAL | CRITICAL
+     Alternativas: ['API_PRODUCT_SRV']
+     Justificativa: O código realiza acesso direto à tabela padrão MARC via comando SELECT, o que é explicitamente proibido pela Política de API v4/2026. Conforme Documento 1 e 2, o acesso a tabelas de mestre de materiais deve ser substituído pelo OData API_PRODUCT_SRV para conformidade com o Clean Core.
+
+============================================================
+📊 RESUMO: 2 violações de 2 análises
+============================================================
+
+  [CRITICAL] 02_direct_table_access.abap:7 — MARA
+    Classificação: INTERNAL
+    Use em vez disso: API_PRODUCT_SRV, I_Material
+
+  [CRITICAL] 02_direct_table_access.abap:13 — MARC
+    Classificação: INTERNAL
+    Use em vez disso: API_PRODUCT_SRV
+==================== demo/03_deprecated_customer_bapi.abap ====================
+
+📋 1 candidatos a auditar em 03_deprecated_customer_bapi.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  73%|███████▎  | 145/199 [00:00<00:00, 1447.19it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1700.06it/s]
+
+[1/1] Auditando BAPI_CUSTOMER_CREATEFROMDATA1 (linha 17)...
+
+  🔍 RAG query: BAPI_CUSTOMER_CREATEFROMDATA1 bapi_call
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → business_accelerator_hub.md: ## Business Partner (formerly Customer/Vendor)
+
+### BAPI_BUPA_CREATE_FROM_DATA
+-...
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+
+  ✅ DEPRECATED | MEDIUM
+     Alternativas: ['BAPI_BUPA_CREATE_FROM_DATA', 'API_BUSINESS_PARTNER']
+     Justificativa: A função BAPI_CUSTOMER_CREATEFROMDATA1 está marcada como DEPRECATED desde o S/4HANA 1511, conforme Documento 1. O uso em novos desenvolvimentos viola o princípio de Clean Core sob a política v4/2026, devendo ser substituída pela abordagem de Business Partner.
+
+============================================================
+📊 RESUMO: 1 violações de 1 análises
+============================================================
+
+  [MEDIUM] 03_deprecated_customer_bapi.abap:17 — BAPI_CUSTOMER_CREATEFROMDATA1
+    Classificação: DEPRECATED
+    Use em vez disso: BAPI_BUPA_CREATE_FROM_DATA, API_BUSINESS_PARTNER
+==================== demo/04_mixed_violations.abap ====================
+
+📋 3 candidatos a auditar em 04_mixed_violations.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  67%|██████▋   | 133/199 [00:00<00:00, 1326.67it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1807.58it/s]
+
+[1/3] Auditando VBAK (linha 13)...
+
+  🔍 RAG query: VBAK select_table
+     → business_accelerator_hub.md: ## Sales Order Management
+
+### BAPI_SALESORDER_CREATEFROMDAT2
+- Status: Released...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+     → clean_core_principles.md: ## Prohibited Patterns
+
+### Direct Table Access
+SELECT, INSERT, UPDATE, DELETE s...
+
+  ✅ INTERNAL | CRITICAL
+     Alternativas: ['A_SalesOrder (CDS View)', 'API_SALES_ORDER_SRV (OData)']
+     Justificativa: O código realiza um acesso direto à tabela padrão VBAK via SELECT, o que é explicitamente proibido pela Política de API v4/2026 e pelos princípios de Clean Core. De acordo com a documentação, o acesso a tabelas como VBAK deve ser substituído obrigatoriamente por CDS Views como A_SalesOrder ou serviços OData.
+
+[2/3] Auditando BAPI_SALESORDER_CREATEFROMDAT2 (linha 19)...
+
+  🔍 RAG query: BAPI_SALESORDER_CREATEFROMDAT2 bapi_call
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → business_accelerator_hub.md: ## Sales Order Management
+
+### BAPI_SALESORDER_CREATEFROMDAT2
+- Status: Released...
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+
+  ✅ PUBLISHED | LOW
+     Alternativas: n/a
+     Justificativa: O objeto BAPI_SALESORDER_CREATEFROMDAT2 está explicitamente listado no SAP Business Accelerator Hub como 'Released for customer use' e em conformidade com a Política de API v4/2026, conforme descrito no Documento 2.
+
+[3/3] Auditando Z_INTERNAL_PRICE_CALC (linha 26)...
+
+  🔍 RAG query: Z_INTERNAL_PRICE_CALC z_function
+     → deprecated_apis.md: ### When Z* function modules need review
+Customer-namespace (Z*) function module...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+
+  ✅ CUSTOM_REVIEW | HIGH
+     Alternativas: ['API_PRICING_PROCEDURE_SRV']
+     Justificativa: O objeto é um módulo de função do namespace cliente (Z*), o qual deve ser sinalizado para CUSTOM_REVIEW conforme Documento 1. A severidade é alta pois o nome sugere uma lógica de negócio (cálculo de preço) que possui um equivalente SAP liberado, como a API_PRICING_PROCEDURE_SRV.
+
+============================================================
+📊 RESUMO: 2 violações de 3 análises
+============================================================
+
+  [CRITICAL] 04_mixed_violations.abap:13 — VBAK
+    Classificação: INTERNAL
+    Use em vez disso: A_SalesOrder (CDS View), API_SALES_ORDER_SRV (OData)
+
+  [HIGH] 04_mixed_violations.abap:26 — Z_INTERNAL_PRICE_CALC
+    Classificação: CUSTOM_REVIEW
+    Use em vez disso: API_PRICING_PROCEDURE_SRV
+==================== demo/05_clean_core_pattern.abap ====================
+
+📋 0 candidatos a auditar em 05_clean_core_pattern.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  69%|██████▉   | 137/199 [00:00<00:00, 1360.60it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1720.20it/s]
+
+============================================================
+📊 RESUMO: 0 violações de 0 análises
+============================================================
+==================== demo/06_ambiguous_zfunction.abap ====================
+
+📋 1 candidatos a auditar em 06_ambiguous_zfunction.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  66%|██████▋   | 132/199 [00:00<00:00, 1306.82it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1814.57it/s]
+
+[1/1] Auditando Z_CUSTOM_BUSINESS_RULE (linha 6)...
+
+  🔍 RAG query: Z_CUSTOM_BUSINESS_RULE z_function
+     → deprecated_apis.md: ### When Z* function modules need review
+Customer-namespace (Z*) function module...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+     → api_policy_v4_2026.md: ## Section 4: Compliance Obligations
+
+Customers are responsible for auditing the...
+
+  ✅ CUSTOM_REVIEW | HIGH
+     Alternativas: ['API_PRICING_PROCEDURE_SRV']
+     Justificativa: O objeto é um módulo de função no namespace customizado (Z*), o qual, conforme o Documento 1, deve ser sinalizado para CUSTOM_REVIEW para verificar se ele encapsula APIs internas ou acessa tabelas padrão. A severidade é definida como HIGH devido à ausência de documentação fornecida sobre a lógica interna do objeto.
+
+============================================================
+📊 RESUMO: 1 violações de 1 análises
+============================================================
+
+  [HIGH] 06_ambiguous_zfunction.abap:6 — Z_CUSTOM_BUSINESS_RULE
+    Classificação: CUSTOM_REVIEW
+    Use em vez disso: API_PRICING_PROCEDURE_SRV

@@ -1,0 +1,175 @@
+==================== demo/01_purchase_order_create.abap ====================
+
+📋 1 candidatos a auditar em 01_purchase_order_create.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  71%|███████▏  | 142/199 [00:00<00:00, 1402.59it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1804.85it/s]
+
+[1/1] Auditando BAPI_PO_CREATE1 (linha 19)...
+
+  🔍 RAG query: BAPI_PO_CREATE1 bapi_call
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → deprecated_apis.md: ## Vendor Master (Deprecated under Business Partner approach)
+
+### BAPI_VENDOR_C...
+
+  ✅ PUBLISHED | LOW
+     Alternativas: n/a
+     Justificativa: O objeto BAPI_PO_CREATE1 está explicitamente listado no Documento 1 como 'Released for customer use' e 'Compliant with API Policy v4/2026', sendo uma interface pública suportada para operações de pedido de compra.
+
+============================================================
+📊 RESUMO: 0 violações de 1 análises
+============================================================
+==================== demo/03_deprecated_customer_bapi.abap ====================
+
+📋 1 candidatos a auditar em 03_deprecated_customer_bapi.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  68%|██████▊   | 136/199 [00:00<00:00, 1358.39it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1831.19it/s]
+
+[1/1] Auditando BAPI_CUSTOMER_CREATEFROMDATA1 (linha 17)...
+
+  🔍 RAG query: BAPI_CUSTOMER_CREATEFROMDATA1 bapi_call
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → business_accelerator_hub.md: ## Business Partner (formerly Customer/Vendor)
+
+### BAPI_BUPA_CREATE_FROM_DATA
+-...
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+
+  ✅ DEPRECATED | MEDIUM
+     Alternativas: ['BAPI_BUPA_CREATE_FROM_DATA', 'API_BUSINESS_PARTNER']
+     Justificativa: A função BAPI_CUSTOMER_CREATEFROMDATA1 está marcada como DEPRECATED desde o S/4HANA 1511, conforme Documento 1. O uso em novos desenvolvimentos viola o princípio de Clean Core sob a política v4/2026, devendo ser substituída pela abordagem de Business Partner.
+
+============================================================
+📊 RESUMO: 1 violações de 1 análises
+============================================================
+
+  [MEDIUM] 03_deprecated_customer_bapi.abap:17 — BAPI_CUSTOMER_CREATEFROMDATA1
+    Classificação: DEPRECATED
+    Use em vez disso: BAPI_BUPA_CREATE_FROM_DATA, API_BUSINESS_PARTNER
+==================== demo/04_mixed_violations.abap ====================
+
+📋 3 candidatos a auditar em 04_mixed_violations.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  65%|██████▍   | 129/199 [00:00<00:00, 1283.18it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1811.98it/s]
+
+[1/3] Auditando VBAK (linha 13)...
+
+  🔍 RAG query: VBAK select_table
+     → business_accelerator_hub.md: ## Sales Order Management
+
+### BAPI_SALESORDER_CREATEFROMDAT2
+- Status: Released...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+     → clean_core_principles.md: ## Prohibited Patterns
+
+### Direct Table Access
+SELECT, INSERT, UPDATE, DELETE s...
+
+  ✅ INTERNAL | CRITICAL
+     Alternativas: ['A_SalesOrder (CDS View)', 'API_SALES_ORDER_SRV (OData)']
+     Justificativa: O código realiza um acesso direto à tabela padrão VBAK via SELECT, o que é explicitamente proibido pela Política de API v4/2026 e pelos princípios de Clean Core (Documento 3). De acordo com o Documento 1, o acesso deve ser substituído obrigatoriamente por A_SalesOrder ou API_SALES_ORDER_SRV.
+
+[2/3] Auditando BAPI_SALESORDER_CREATEFROMDAT2 (linha 19)...
+
+  🔍 RAG query: BAPI_SALESORDER_CREATEFROMDAT2 bapi_call
+     → deprecated_apis.md: ### BAPI_CUSTOMER_CREATEFROMDATA1
+- Status: DEPRECATED
+- Deprecated since: S/4HA...
+     → business_accelerator_hub.md: ## Sales Order Management
+
+### BAPI_SALESORDER_CREATEFROMDAT2
+- Status: Released...
+     → business_accelerator_hub.md: ## Purchase Order Management
+
+### BAPI_PO_CREATE1
+- Status: Released for custome...
+
+  ✅ PUBLISHED | LOW
+     Alternativas: n/a
+     Justificativa: O objeto BAPI_SALESORDER_CREATEFROMDAT2 está explicitamente listado no Documento 2 como 'Released for customer use' e 'Compliant with API Policy v4/2026', sendo portanto uma API pública permitida.
+
+[3/3] Auditando Z_INTERNAL_PRICE_CALC (linha 26)...
+
+  🔍 RAG query: Z_INTERNAL_PRICE_CALC z_function
+     → deprecated_apis.md: ## Pricing (Legacy)
+
+### Internal Z-namespace Pricing RFCs
+Function modules in t...
+     → api_policy_v4_2026.md: ## Section 2: Published vs Internal APIs
+
+A published API is one that meets ALL ...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+
+  ✅ INTERNAL | HIGH
+     Alternativas: ['API_PRICING_PROCEDURE_SRV']
+     Justificativa: O objeto Z_INTERNAL_PRICE_CALC é um módulo de função no namespace de cliente (Z*), que não consta no SAP Business Accelerator Hub. De acordo com o Documento 2, funções Z* com assinaturas não documentadas são classificadas como APIs internas, o que é proibido pela política v4/2026.
+
+============================================================
+📊 RESUMO: 2 violações de 3 análises
+============================================================
+
+  [CRITICAL] 04_mixed_violations.abap:13 — VBAK
+    Classificação: INTERNAL
+    Use em vez disso: A_SalesOrder (CDS View), API_SALES_ORDER_SRV (OData)
+
+  [HIGH] 04_mixed_violations.abap:26 — Z_INTERNAL_PRICE_CALC
+    Classificação: INTERNAL
+    Use em vez disso: API_PRICING_PROCEDURE_SRV
+==================== demo/05_clean_core_pattern.abap ====================
+
+📋 0 candidatos a auditar em 05_clean_core_pattern.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  71%|███████   | 141/199 [00:00<00:00, 1403.46it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1739.64it/s]
+
+============================================================
+📊 RESUMO: 0 violações de 0 análises
+============================================================
+==================== demo/06_ambiguous_zfunction.abap ====================
+
+📋 1 candidatos a auditar em 06_ambiguous_zfunction.abap
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  68%|██████▊   | 135/199 [00:00<00:00, 1341.73it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1776.51it/s]
+
+[1/1] Auditando Z_CUSTOM_BUSINESS_RULE (linha 6)...
+
+  🔍 RAG query: Z_CUSTOM_BUSINESS_RULE z_function
+     → deprecated_apis.md: ## Pricing (Legacy)
+
+### Internal Z-namespace Pricing RFCs
+Function modules in t...
+     → deprecated_apis.md: ## Migration Priority Matrix
+
+| Pattern | Severity | Action |
+|---------|-------...
+     → api_policy_v4_2026.md: ## Section 4: Compliance Obligations
+
+Customers are responsible for auditing the...
+
+  ✅ INTERNAL | HIGH
+     Alternativas: ['API_PRICING_PROCEDURE_SRV']
+     Justificativa: O uso de módulos de função no namespace Z* sem documentação oficial no Business Accelerator Hub é classificado como INTERNAL ou UNKNOWN sob a política v4/2026. De acordo com a Matriz de Prioridade de Migração (Documento 2), a severidade para funções Z* sem documentação é MÉDIA, porém, como se trata de uma regra de negócio customizada que pode impactar a estabilidade do núcleo, a severidade é elevada para HIGH para garantir a conformidade com o Clean Core.
+
+============================================================
+📊 RESUMO: 1 violações de 1 análises
+============================================================
+
+  [HIGH] 06_ambiguous_zfunction.abap:6 — Z_CUSTOM_BUSINESS_RULE
+    Classificação: INTERNAL
+    Use em vez disso: API_PRICING_PROCEDURE_SRV
