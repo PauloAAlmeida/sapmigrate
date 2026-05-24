@@ -8,7 +8,7 @@ to showcase Gemma 4 31B's technical multilingual capability.
 import sys
 from pathlib import Path
 from collections import Counter
-
+import os
 sys.path.insert(0, str(Path(__file__).parent))
 
 import gradio as gr
@@ -246,4 +246,8 @@ with gr.Blocks(title="SAPMigrate", theme=gr.themes.Soft()) as demo:
 
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, inbrowser=False)
+    demo.launch(
+    server_name=os.environ.get("SAPMIGRATE_HOST", "127.0.0.1"),
+    server_port=7860,
+    inbrowser=False,
+)

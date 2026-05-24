@@ -71,7 +71,7 @@ Your task is to classify ABAP/Python/Java code excerpts for compliance with the 
   that may wrap non-published APIs, or Z* whose business logic has a released
   SAP equivalent).
 
-You receive: (a) the code excerpt under analysis, (b) relevant excerpts retrieved from official SAP documentation via RAG.
+You receive: (a) the code excerpt under analysis, (b) relevant excerpts retrieved from a curated local SAP policy corpus via RAG.
 
 Respond ONLY in valid JSON with this structure:
 {
@@ -105,7 +105,7 @@ def build_user_prompt(candidate: dict, docs: list[dict]) -> str:
 SAP object identified: {candidate['objeto']}
 Call type: {candidate['tipo']}
 
-Excerpts retrieved from SAP documentation:
+Excerpts retrieved from local SAP policy corpus:
 
 {docs_section}
 
