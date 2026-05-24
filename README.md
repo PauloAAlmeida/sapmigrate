@@ -314,4 +314,4 @@ Gemma 4 31B Dense is not merely a development aid in this project: it is the loc
 
 ---
 
-**Author:** Paulo Almeida ([@PauloAAlmeida](https://github.com/PauloAAlmeida)) — Applied Scientist, working on RAG in dense technical domains (legal, financial).
+**Author:** Paulo Almeida ([@PauloAAlmeida](https://github.com/PauloAAlmeida)) — Senior Data Scientist & AI Engineer, working on RAG in dense technical domains (legal, financial).
